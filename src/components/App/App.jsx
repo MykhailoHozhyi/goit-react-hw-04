@@ -6,6 +6,7 @@ import { fetchGallery } from '../../gallery-api';
 import Loader from '../Loader/Loader';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import ImageModal from '../ImageModal/ImageModal';
 
 export default function App() {
   const [gallery, setGallery] = useState([]);
@@ -14,6 +15,8 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState('');
   const [totalPages, setTotalPages] = useState(0);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modalData, setModalData] = useState({});
 
   async function handleSearch(searchValue, page = 1) {
     try {
@@ -45,13 +48,24 @@ export default function App() {
     }
   }
 
+  function onOpenModal(imageData) {
+    setIsOpenModal(true);
+    setModalData(imageData);
+  }
+
+  function onCloseModal() {
+    setIsOpenModal(false);
+  }
+
   return (
     <>
       <SearchBar onSubmit={handleSearch} />
 
       {error && <ErrorMessage />}
 
-      {gallery.length > 0 && <ImageGallery gallery={gallery} />}
+      {gallery.length > 0 && (
+        <ImageGallery gallery={gallery} onOpenModal={onOpenModal} />
+      )}
 
       {gallery.length > 0 && !loading && currentPage < totalPages && (
         <LoadMoreBtn
@@ -62,6 +76,14 @@ export default function App() {
       )}
 
       {loading && <Loader />}
+
+      {isOpenModal && (
+        <ImageModal
+          isOpenModal={isOpenModal}
+          onCloseModal={onCloseModal}
+          modalData={modalData}
+        />
+      )}
     </>
   );
 }
