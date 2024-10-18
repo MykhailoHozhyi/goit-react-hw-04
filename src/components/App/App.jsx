@@ -40,7 +40,7 @@ export default function App() {
         setGallery(galleryResults);
       }
 
-      setCurrentPage(page);
+      setCurrentPage(page + 1);
     } catch (error) {
       setError(true);
     } finally {
